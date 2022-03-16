@@ -30,3 +30,19 @@ jobs:
 
       - name: Run integration tests
         run: poetry run pytest tests/test_integration.py
+
+      - name: Deploy to develop and run regression tests
+        uses: ./.github/actions/deploy-heroku
+        if: github.ref_name != 'main' || github.event_name == 'pull_request_target'
+        with:
+          secret: ${{ secrets.HEROKU_API_KEY }}
+          app: sentineldev
+          email: samo@jelovsek.net
+
+      - name: Deploy to production and run regression tests
+        uses: ./.github/actions/deploy-heroku
+        if: github.ref_name == 'main' && github.event_name == 'push'
+        with:
+          secret: ${{ secrets.HEROKU_API_KEY }}
+          app: sentinelprod
+          email: samo@jelovsek.net

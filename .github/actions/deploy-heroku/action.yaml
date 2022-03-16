@@ -1,0 +1,43 @@
+name: "Deploy to Heroku"
+description: "Deploy to heroku"
+inputs:
+  app:
+    required: true
+    description: "App name"
+  secret:
+    required: true
+    description: "Secret"
+  email:
+    required: true
+    description: "Email"
+runs:
+  using: "composite"
+  steps:
+    - name: Heroku login credentials
+      shell: bash
+      run: |
+        cat > ~/.netrc <<EOF
+          machine api.heroku.com
+            login ${{ inputs.email }}
+            password ${{ inputs.secret }}
+          machine git.heroku.com
+            login ${{ inputs.email }}
+            password ${{ inputs.secret }}
+        EOF
+    - name: Add Heroku remote
+      shell: bash
+      run: heroku git:remote --app ${{ inputs.app }}
+    - name: Set build pack
+      shell: bash
+      run: |
+        heroku buildpacks:clear
+        heroku buildpacks:add https://github.com/moneymeets/python-poetry-buildpack.git
+        heroku buildpacks:add heroku/python
+    - name: Push to Heroku
+      shell: bash
+      run: git push heroku HEAD:refs/heads/master
+    - name: Run regression tests after deploy
+      shell: bash
+      run: poetry run pytest tests/test_regression.py
+      env:
+        BASE_URL: https://${{ inputs.app }}.herokuapp.com
