@@ -44,3 +44,15 @@ BASE_URL=http://localhost:8000 poetry run pytest tests/test_regression.py
 ```sh
 poetry run pytest tests/test_integration.py
 ```
+
+## CI/CD
+
+To submit new code fork this repository and create a pull request.
+
+Your code must pass `build-test-deploy` status check. This is a Github job with the following steps:
+* runs unit tests,
+* checks if code coverage is above 90%,
+* runs integrations tests,
+* deploys code to dev environment (https://sentineldev.herokuapp.com) and runs regression tests on deployed code.
+
+Pull request will be merged by the owner. When code is accepted to `main` branch similar steps are executed, with one exception. Code is deployed to prod environment (https://sentineldev.herokuapp.com) and regression tests are run on prod environment.
