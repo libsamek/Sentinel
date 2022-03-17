@@ -49,10 +49,9 @@ poetry run pytest tests/test_integration.py
 
 To submit new code fork this repository and create a pull request.
 
-Your code must pass `build-test-deploy` status check. This is a Github job with the following steps:
+Your code must pass `test` status check. This is a Github job with the following steps:
 * runs unit tests,
 * checks if code coverage is above 90%,
-* runs integrations tests,
-* deploys code to dev environment (https://sentineldev.herokuapp.com) and runs regression tests on deployed code.
+* runs integrations tests.
 
-Pull request will be merged by the owner. When code is accepted to `main` branch similar steps are executed, with one exception. Code is deployed to prod environment (https://sentineldev.herokuapp.com) and regression tests are run on prod environment.
+Pull requests will be reviewed and merged by the owner. When code is accepted to the `main` branch all tests are run again. After the test job succeeds we try to deploy new code to dev environment (https://sentineldev.herokuapp.com) and run regression tests on deployed code. This ensures that breaking changes are not promoted to prod. If all goes well code is promoted to prod environment (https://sentinelprod.herokuapp.com) and once again we run regression tests just to make sure deploy was successful.
