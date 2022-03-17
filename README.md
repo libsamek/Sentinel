@@ -55,3 +55,5 @@ Your code must pass `test` status check. This is a Github job with the following
 * runs integrations tests.
 
 Pull requests will be reviewed and merged by the owner. When code is accepted to the `main` branch all tests are run again. After the test job succeeds we try to deploy new code to dev environment (https://sentineldev.herokuapp.com) and run regression tests on deployed code. This ensures that breaking changes are not promoted to prod. If all goes well code is promoted to prod environment (https://sentinelprod.herokuapp.com) and once again we run regression tests just to make sure deploy was successful.
+
+The initial idea was to deploy to dev environment and run regression tests on it at pull request time, but there is a security issue with forked repositories, so a trade-off was made and dev deploy was moved after merge due to simplicity.
